@@ -7,12 +7,7 @@
     <title>Neuron Converter | Neuron Ecosystem</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
+        * { margin: 0; padding: 0; box-sizing: border-box; }
         :root {
             --primary: #6366f1;
             --primary-dark: #4f46e5;
@@ -21,8 +16,8 @@
             --text: #ffffff;
             --text-secondary: #a0a0c0;
             --accent: #8b5cf6;
+            --error: #ef4444;
         }
-
         body {
             background: var(--bg);
             color: var(--text);
@@ -31,836 +26,311 @@
             overflow-x: hidden;
         }
 
-        .particles {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            z-index: -1;
+        /* Auth UI */
+        .auth-header { position: absolute; top: 1rem; right: 1rem; z-index: 100; }
+        .auth-btn {
+            background: var(--primary); color: white; border: none; padding: 0.6rem 1.2rem;
+            border-radius: 8px; cursor: pointer; font-weight: 600; transition: all 0.3s ease;
+            display: flex; align-items: center; gap: 0.5rem;
+        }
+        .auth-btn:hover { background: var(--primary-dark); transform: translateY(-2px); }
+        #user-info { display: none; align-items: center; gap: 1rem; background: rgba(255,255,255,0.05); padding: 0.5rem 1rem; border-radius: 50px; }
+        .user-avatar { width: 32px; height: 32px; border-radius: 50%; border: 2px solid var(--primary); }
+
+        /* Modal */
+        .modal {
+            display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.8); backdrop-filter: blur(5px); z-index: 1000;
+            justify-content: center; align-items: center;
+        }
+        .modal-content {
+            background: var(--card-bg); padding: 2.5rem; border-radius: 20px;
+            width: 100%; max-width: 400px; position: relative; border: 1px solid rgba(255,255,255,0.1);
+        }
+        .close-modal { position: absolute; top: 1rem; right: 1rem; color: var(--text-secondary); cursor: pointer; font-size: 1.5rem; }
+        .auth-tabs { display: flex; gap: 1rem; margin-bottom: 2rem; border-bottom: 1px solid rgba(255,255,255,0.1); }
+        .auth-tab { padding: 0.5rem 1rem; cursor: pointer; color: var(--text-secondary); }
+        .auth-tab.active { color: var(--primary); border-bottom: 2px solid var(--primary); }
+        .google-login-btn {
+            width: 100%; padding: 0.8rem; background: white; color: #000; border: none;
+            border-radius: 8px; margin-bottom: 1.5rem; cursor: pointer; display: flex;
+            align-items: center; justify-content: center; gap: 0.5rem; font-weight: 600;
         }
 
-        .container {
-            max-width: 1000px;
-            margin: 0 auto;
-            padding: 2rem;
+        /* History Styles */
+        .history-list { display: flex; flex-direction: column; gap: 10px; margin-top: 20px; }
+        .history-item {
+            background: rgba(255,255,255,0.05); padding: 15px; border-radius: 10px;
+            border-left: 4px solid var(--primary); display: flex; justify-content: space-between; align-items: center;
         }
+        .history-date { font-size: 0.8rem; color: var(--text-secondary); }
 
-        .header {
-            text-align: center;
-            margin-bottom: 3rem;
-            animation: fadeInUp 1s ease;
-        }
-
-        .logo {
-            font-size: 4rem;
-            margin-bottom: 1rem;
-            background: linear-gradient(135deg, var(--primary), var(--accent));
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            animation: float 3s ease-in-out infinite;
-        }
-
-        .nav-buttons {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 1.5rem;
-            margin: 3rem 0;
-        }
-
+        /* General UI */
+        .container { max-width: 1000px; margin: 0 auto; padding: 2rem; }
+        .header { text-align: center; margin-bottom: 3rem; animation: fadeInUp 1s ease; }
+        .logo { font-size: 4rem; margin-bottom: 1rem; background: linear-gradient(135deg, var(--primary), var(--accent)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; animation: float 3s ease-in-out infinite; }
+        .nav-buttons { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 1.5rem; margin: 3rem 0; }
         .nav-btn {
-            background: var(--card-bg);
-            border: 1px solid rgba(255,255,255,0.1);
-            border-radius: 15px;
-            padding: 2rem;
-            text-align: center;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            text-decoration: none;
-            color: inherit;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 1rem;
+            background: var(--card-bg); border: 1px solid rgba(255,255,255,0.1); border-radius: 15px;
+            padding: 1.5rem; text-align: center; cursor: pointer; transition: all 0.3s ease;
+            text-decoration: none; color: inherit; display: flex; flex-direction: column; align-items: center; gap: 0.8rem;
         }
-
-        .nav-btn:hover {
-            transform: translateY(-5px);
-            border-color: var(--primary);
-            box-shadow: 0 10px 30px rgba(99, 102, 241, 0.3);
-        }
-
-        .nav-icon {
-            font-size: 2.5rem;
-            background: linear-gradient(135deg, var(--primary), var(--accent));
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
-
-        .converter-section {
-            background: var(--card-bg);
-            border-radius: 20px;
-            padding: 2rem;
-            margin-bottom: 2rem;
-            border: 1px solid rgba(255,255,255,0.1);
-            display: none;
-        }
-
-        .section-active {
-            display: block;
-            animation: fadeInUp 0.5s ease;
-        }
-
-        .input-group {
-            margin-bottom: 1.5rem;
-        }
-
-        label {
-            display: block;
-            margin-bottom: 0.5rem;
-            font-weight: 600;
-            color: var(--text);
-        }
-
-        input, select {
-            width: 100%;
-            padding: 1rem;
-            background: rgba(255,255,224);
-            border: 1px solid rgba(255,255,255,0.1);
-            border-radius: 10px;
-            color: #000000;
-            font-size: 1rem;
-            transition: all 0.3s ease;
-        }
-
-        input:focus, select:focus {
-            outline: none;
-            border-color: var(--primary);
-            box-shadow: 0 0 0 2px rgba(99, 102, 241, 0.2);
-        }
-
-        .currency-row {
-            display: grid;
-            grid-template-columns: 1fr auto 1fr;
-            gap: 1rem;
-            align-items: end;
-            margin-bottom: 2rem;
-        }
-
-        .swap-btn {
-            background: var(--primary);
-            color: white;
-            border: none;
-            width: 50px;
-            height: 50px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            margin-bottom: 1rem;
-        }
-
-        .swap-btn:hover {
-            background: var(--primary-dark);
-            transform: rotate(180deg);
-        }
-
-        .convert-btn {
-            width: 100%;
-            padding: 1rem 2rem;
-            background: var(--primary);
-            color: white;
-            border: none;
-            border-radius: 10px;
-            font-size: 1.1rem;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            margin-bottom: 2rem;
-        }
-
-        .convert-btn:hover {
-            background: var(--primary-dark);
-            transform: translateY(-2px);
-        }
-
-        .result {
-            background: rgba(255,255,255,0.05);
-            padding: 2rem;
-            border-radius: 15px;
-            text-align: center;
-            font-size: 1.5rem;
-            font-weight: 600;
-            border: 1px solid rgba(255,255,255,0.1);
-        }
-
-        .result small {
-            display: block;
-            font-size: 0.9rem;
-            color: var(--text-secondary);
-            margin-top: 0.5rem;
-            font-weight: normal;
-        }
-
-        .rates-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
-            gap: 1rem;
-            margin-top: 2rem;
-        }
-
-        .rate-card {
-            background: rgba(255,255,255,0.05);
-            padding: 1.5rem;
-            border-radius: 10px;
-            text-align: center;
-            border: 1px solid rgba(255,255,255,0.1);
-            transition: all 0.3s ease;
-        }
-
-        .rate-card:hover {
-            transform: translateY(-3px);
-            border-color: var(--primary);
-        }
-
-        .rate-currency {
-            font-weight: 600;
-            color: var(--primary);
-            margin-bottom: 0.5rem;
-        }
-
-        .rate-value {
-            font-size: 1.2rem;
-            font-weight: 700;
-            margin-bottom: 0.5rem;
-        }
-
-        .rate-date {
-            font-size: 0.8rem;
-            color: var(--text-secondary);
-        }
-
-        .unit-category {
-            background: rgba(255,255,255,0.05);
-            padding: 1.5rem;
-            border-radius: 15px;
-            margin-bottom: 2rem;
-            border: 1px solid rgba(255,255,255,0.1);
-        }
-
-        .unit-category h3 {
-            color: var(--accent);
-            margin-bottom: 1.5rem;
-            padding-bottom: 0.5rem;
-            border-bottom: 2px solid var(--accent);
-        }
-
-        .back-btn {
-            background: rgba(255,255,255,0.1);
-            color: var(--text);
-            border: none;
-            padding: 0.8rem 1.5rem;
-            border-radius: 10px;
-            cursor: pointer;
-            text-decoration: none;
-            display: inline-flex;
-            align-items: center;
-            gap: 0.5rem;
-            margin-bottom: 2rem;
-            transition: all 0.3s ease;
-        }
-
-        .back-btn:hover {
-            background: rgba(255,255,255,0.2);
-        }
-
-        .footer {
-            text-align: center;
-            margin-top: 3rem;
-            padding-top: 2rem;
-            border-top: 1px solid rgba(255,255,255,0.1);
-            color: var(--text-secondary);
-        }
-
-        .telegram-link {
-            color: var(--primary);
-            text-decoration: none;
-            display: inline-flex;
-            align-items: center;
-            gap: 0.5rem;
-            margin-top: 1rem;
-        }
-
-        .telegram-link:hover {
-            color: var(--accent);
-        }
-
-        @keyframes fadeInUp {
-            from {
-                opacity: 0;
-                transform: translateY(30px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        @keyframes float {
-            0%, 100% { transform: translateY(0px); }
-            50% { transform: translateY(-10px); }
-        }
-
-        .loader {
-            display: none;
-            width: 40px;
-            height: 40px;
-            border: 4px solid rgba(255,255,255,0.1);
-            border-top: 4px solid var(--primary);
-            border-radius: 50%;
-            animation: spin 1s linear infinite;
-            margin: 1rem auto;
-        }
-
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
-
-        @media (max-width: 768px) {
-            .container {
-                padding: 1rem;
-            }
-            
-            .nav-buttons {
-                grid-template-columns: 1fr;
-            }
-            
-            .currency-row {
-                grid-template-columns: 1fr;
-            }
-            
-            .swap-btn {
-                align-self: center;
-                margin: 1rem 0;
-            }
-            
-            .rates-grid {
-                grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
-            }
-        }
+        .nav-btn:hover { transform: translateY(-5px); border-color: var(--primary); box-shadow: 0 10px 30px rgba(99, 102, 241, 0.3); }
+        .nav-icon { font-size: 2rem; background: linear-gradient(135deg, var(--primary), var(--accent)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .converter-section { background: var(--card-bg); border-radius: 20px; padding: 2rem; margin-bottom: 2rem; border: 1px solid rgba(255,255,255,0.1); display: none; }
+        .section-active { display: block; animation: fadeInUp 0.5s ease; }
+        input, select { width: 100%; padding: 1rem; background: #fff; border: 1px solid #ddd; border-radius: 10px; color: #000; margin-top: 5px; }
+        .convert-btn { width: 100%; padding: 1rem; background: var(--primary); color: white; border: none; border-radius: 10px; font-weight: 600; cursor: pointer; margin: 15px 0; }
+        .result { background: rgba(255,255,255,0.05); padding: 1.5rem; border-radius: 15px; text-align: center; font-size: 1.2rem; border: 1px solid rgba(255,255,255,0.1); }
+        .error-msg { color: var(--error); font-size: 0.8rem; margin-top: 0.5rem; display: none; }
+        
+        @keyframes fadeInUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
     </style>
 </head>
 <body>
-    <div class="particles" id="particles"></div>
-    
-    <div class="container">
-        <!-- Главное меню -->
-        <div id="main-menu">
-            <div class="header">
-                <div class="logo">
-                    <i class="fas fa-exchange-alt"></i>
-                </div>
-                <h1 style="font-size: 2.5rem; margin-bottom: 1rem;">Neuron Converter</h1>
-                <p style="color: var(--text-secondary); font-size: 1.2rem;">
-                    Умные инструменты для конвертации
-                </p>
-            </div>
+    <div id="particles" style="position:fixed; top:0; left:0; width:100%; height:100%; z-index:-1;"></div>
 
-            <div class="nav-buttons">
-                <a href="http://neuron-p2p.ru/" class="nav-btn">
-                    <i class="fas fa-home nav-icon"></i>
-                    <span>Главный портал</span>
-                </a>
-                
-                <div class="nav-btn" onclick="showSection('currency')">
-                    <i class="fas fa-money-bill-wave nav-icon"></i>
-                    <span>Конвертер валют</span>
-                </div>
-                
-                <div class="nav-btn" onclick="showSection('rates')">
-                    <i class="fas fa-chart-line nav-icon"></i>
-                    <span>Курсы валют</span>
-                </div>
-                
-                <div class="nav-btn" onclick="showSection('units')">
-                    <i class="fas fa-ruler-combined nav-icon"></i>
-                    <span>Конвертер единиц</span>
-                </div>
-            </div>
-        </div>
-
-        <!-- Конвертер валют -->
-        <div id="currency-converter" class="converter-section">
-            <button class="back-btn" onclick="showMainMenu()">
-                <i class="fas fa-arrow-left"></i> Назад
-            </button>
-            
-            <h2 style="margin-bottom: 2rem; color: var(--primary);">
-                <i class="fas fa-money-bill-wave"></i> Конвертер валют
-            </h2>
-
-            <div class="input-group">
-                <label for="amount">Сумма</label>
-                <input type="number" id="amount" placeholder="Введите сумму" step="0.01" min="0">
-            </div>
-            
-            <div class="currency-row">
-                <div>
-                    <label for="from-currency">Из валюты</label>
-                    <select id="from-currency"></select>
-                </div>
-                
-                <button class="swap-btn" id="swap-btn">
-                    <i class="fas fa-exchange-alt"></i>
-                </button>
-                
-                <div>
-                    <label for="to-currency">В валюту</label>
-                    <select id="to-currency"></select>
-                </div>
-            </div>
-            
-            <button class="convert-btn" id="convert-btn">
-                <i class="fas fa-sync-alt"></i> Конвертировать
-            </button>
-            
-            <div class="result" id="result">
-                Результат появится здесь
-            </div>
-            
-            <div class="loader" id="loader"></div>
-        </div>
-
-        <!-- Курсы валют -->
-        <div id="rates-view" class="converter-section">
-            <button class="back-btn" onclick="showMainMenu()">
-                <i class="fas fa-arrow-left"></i> Назад
-            </button>
-            
-            <h2 style="margin-bottom: 2rem; color: var(--primary);">
-                <i class="fas fa-chart-line"></i> Актуальные курсы валют
-            </h2>
-            
-            <p style="color: var(--text-secondary); margin-bottom: 2rem;">
-                Курсы обновляются в реальном времени
-            </p>
-            
-            <div class="rates-grid" id="rates-grid">
-                <!-- Курсы валют будут загружены здесь -->
-            </div>
-            
-            <div class="loader" id="rates-loader"></div>
-        </div>
-
-        <!-- Конвертер единиц -->
-        <div id="units-converter" class="converter-section">
-            <button class="back-btn" onclick="showMainMenu()">
-                <i class="fas fa-arrow-left"></i> Назад
-            </button>
-            
-            <h2 style="margin-bottom: 2rem; color: var(--primary);">
-                <i class="fas fa-ruler-combined"></i> Конвертер единиц измерения
-            </h2>
-
-            <div class="unit-category">
-                <h3><i class="fas fa-ruler"></i> Длина</h3>
-                <div class="input-group">
-                    <label for="length-amount">Значение</label>
-                    <input type="number" id="length-amount" placeholder="Введите значение" step="0.01">
-                </div>
-                <div class="currency-row">
-                    <div>
-                        <label for="from-unit-length">Из единицы</label>
-                        <select id="from-unit-length">
-                            <option value="mm">Миллиметры</option>
-                            <option value="cm">Сантиметры</option>
-                            <option value="m">Метры</option>
-                            <option value="km">Километры</option>
-                        </select>
-                    </div>
-                    <div>
-                        <label for="to-unit-length">В единицу</label>
-                        <select id="to-unit-length">
-                            <option value="mm">Миллиметры</option>
-                            <option value="cm">Сантиметры</option>
-                            <option value="m">Метры</option>
-                            <option value="km">Километры</option>
-                        </select>
-                    </div>
-                </div>
-                <button class="convert-btn" onclick="convertLength()">
-                    Конвертировать длину
-                </button>
-                <div class="result" id="length-result">
-                    Результат появится здесь
-                </div>
-            </div>
-
-            <div class="unit-category">
-                <h3><i class="fas fa-weight"></i> Вес</h3>
-                <div class="input-group">
-                    <label for="weight-amount">Значение</label>
-                    <input type="number" id="weight-amount" placeholder="Введите значение" step="0.01">
-                </div>
-                <div class="currency-row">
-                    <div>
-                        <label for="from-unit-weight">Из единицы</label>
-                        <select id="from-unit-weight">
-                            <option value="g">Граммы</option>
-                            <option value="kg">Килограммы</option>
-                            <option value="t">Тонны</option>
-                        </select>
-                    </div>
-                    <div>
-                        <label for="to-unit-weight">В единицу</label>
-                        <select id="to-unit-weight">
-                            <option value="g">Граммы</option>
-                            <option value="kg">Килограммы</option>
-                            <option value="t">Тонны</option>
-                        </select>
-                    </div>
-                </div>
-                <button class="convert-btn" onclick="convertWeight()">
-                    Конвертировать вес
-                </button>
-                <div class="result" id="weight-result">
-                    Результат появится здесь
-                </div>
-            </div>
-
-            <div class="unit-category">
-                <h3><i class="fas fa-thermometer"></i> Температура</h3>
-                <div class="input-group">
-                    <label for="temp-amount">Значение</label>
-                    <input type="number" id="temp-amount" placeholder="Введите значение" step="0.01">
-                </div>
-                <div class="currency-row">
-                    <div>
-                        <label for="from-unit-temp">Из единицы</label>
-                        <select id="from-unit-temp">
-                            <option value="c">Цельсий</option>
-                            <option value="f">Фаренгейт</option>
-                        </select>
-                    </div>
-                    <div>
-                        <label for="to-unit-temp">В единицу</label>
-                        <select id="to-unit-temp">
-                            <option value="c">Цельсий</option>
-                            <option value="f">Фаренгейт</option>
-                        </select>
-                    </div>
-                </div>
-                <button class="convert-btn" onclick="convertTemperature()">
-                    Конвертировать температуру
-                </button>
-                <div class="result" id="temp-result">
-                    Результат появится здесь
-                </div>
-            </div>
-        </div>
-
-        <div class="footer">
-            <p>Neuron Converter • Часть экосистемы Neuron</p>
-            <a href="https://t.me/neuron_ecosystem" class="telegram-link" target="_blank">
-                <i class="fab fa-telegram"></i> Наш Telegram канал
-            </a>
+    <div class="auth-header">
+        <button id="login-trigger" class="auth-btn"><i class="fas fa-sign-in-alt"></i> Вход</button>
+        <div id="user-info">
+            <img src="" id="user-avatar" class="user-avatar">
+            <span id="user-name"></span>
+            <button id="logout-btn" class="auth-btn"><i class="fas fa-sign-out-alt"></i></button>
         </div>
     </div>
 
-    <script>
-        // Элементы DOM
-        const mainMenu = document.getElementById('main-menu');
-        const currencyConverter = document.getElementById('currency-converter');
-        const ratesView = document.getElementById('rates-view');
-        const unitsConverter = document.getElementById('units-converter');
-        
-        const amountInput = document.getElementById('amount');
-        const fromCurrencySelect = document.getElementById('from-currency');
-        const toCurrencySelect = document.getElementById('to-currency');
-        const swapBtn = document.getElementById('swap-btn');
-        const convertBtn = document.getElementById('convert-btn');
-        const resultDiv = document.getElementById('result');
-        const loader = document.getElementById('loader');
-        const ratesLoader = document.getElementById('rates-loader');
-        const ratesGrid = document.getElementById('rates-grid');
+    <div class="modal" id="auth-modal">
+        <div class="modal-content">
+            <span class="close-modal" id="close-modal">&times;</span>
+            <div class="auth-tabs">
+                <div class="auth-tab active" id="tab-login">Вход</div>
+                <div class="auth-tab" id="tab-register">Регистрация</div>
+            </div>
+            <button class="google-login-btn" id="google-auth">
+                <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" width="18"> Google
+            </button>
+            <input type="email" id="auth-email" placeholder="Email" style="margin-bottom:10px">
+            <input type="password" id="auth-password" placeholder="Пароль">
+            <button class="convert-btn" id="submit-auth">Войти</button>
+            <div id="auth-error" class="error-msg"></div>
+        </div>
+    </div>
 
-        // Данные
-        const currencies = {
-            "RUB": "Российский рубль",
-            "USD": "Доллар США", 
-            "EUR": "Евро",
-            "GBP": "Фунт стерлингов",
-            "JPY": "Японская иена",
-            "CNY": "Китайский юань"
+    <div class="container">
+        <div id="main-menu">
+            <div class="header">
+                <div class="logo"><i class="fas fa-exchange-alt"></i></div>
+                <h1>Neuron Converter</h1>
+            </div>
+            <div class="nav-buttons">
+                <div class="nav-btn" onclick="showSection('currency')"><i class="fas fa-money-bill-wave nav-icon"></i><span>Валюты</span></div>
+                <div class="nav-btn" onclick="showSection('units')"><i class="fas fa-ruler-combined nav-icon"></i><span>Единицы</span></div>
+                <div class="nav-btn" onclick="showSection('history')"><i class="fas fa-history nav-icon"></i><span>История</span></div>
+                <a href="http://neuron-p2p.ru/" class="nav-btn"><i class="fas fa-home nav-icon"></i><span>Портал</span></a>
+            </div>
+        </div>
+
+        <div id="currency-converter" class="converter-section">
+            <button class="auth-btn" onclick="showMainMenu()">Назад</button>
+            <h2>Конвертер валют</h2>
+            <input type="number" id="amount" placeholder="Сумма">
+            <select id="from-currency"></select>
+            <select id="to-currency"></select>
+            <button class="convert-btn" id="convert-btn">Конвертировать</button>
+            <div id="result" class="result">Результат</div>
+        </div>
+
+        <div id="units-converter" class="converter-section">
+            <button class="auth-btn" onclick="showMainMenu()">Назад</button>
+            <h2>Конвертер единиц (Длина)</h2>
+            <input type="number" id="length-amount" placeholder="Значение">
+            <select id="from-length"><option value="m">Метры</option><option value="km">Км</option></select>
+            <select id="to-length"><option value="m">Метры</option><option value="km">Км</option></select>
+            <button class="convert-btn" onclick="runUnitConversion()">Конвертировать</button>
+            <div id="unit-result" class="result">Результат</div>
+        </div>
+
+        <div id="history-section" class="converter-section">
+            <button class="auth-btn" onclick="showMainMenu()">Назад</button>
+            <h2>История операций</h2>
+            <div id="history-container" class="history-list">
+                </div>
+            <button class="auth-btn" onclick="clearHistoryUI()" style="margin-top:20px; background: var(--error)">Очистить историю</button>
+        </div>
+    </div>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/12.7.0/firebase-app.js";
+        import { getAuth, signInWithPopup, GoogleAuthProvider, onAuthStateChanged, signOut, signInWithEmailAndPassword, createUserWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/12.7.0/firebase-auth.js";
+        import { getFirestore, collection, addDoc, query, where, getDocs, orderBy, limit, deleteDoc } from "https://www.gstatic.com/firebasejs/12.7.0/firebase-firestore.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyDOaDVzzPjyYm4HWMND2XYWjLy_h4wty5s",
+            authDomain: "neuron-ecosystem-2025.firebaseapp.com",
+            projectId: "neuron-ecosystem-2025",
+            storageBucket: "neuron-ecosystem-2025.firebasestorage.app",
+            messagingSenderId: "589834476565",
+            appId: "1:589834476565:web:145d416afc673775dd421c"
         };
 
-        const unitConversions = {
-            length: {
-                mm: 1,
-                cm: 10,
-                m: 1000,
-                km: 1000000
-            },
-            weight: {
-                g: 1,
-                kg: 1000,
-                t: 1000000
-            }
-        };
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getFirestore(app);
+        let currentUser = null;
 
-        let exchangeRates = {};
-        let baseCurrency = 'USD';
+        // --- Логика Истории ---
+        async function saveToHistory(data) {
+            const historyEntry = {
+                ...data,
+                date: new Date().toLocaleString(),
+                timestamp: Date.now()
+            };
 
-        // Инициализация
-        function init() {
-            populateCurrencyDropdowns();
-            createParticles();
-        }
-
-        // Создание частиц для фона
-        function createParticles() {
-            const particles = document.getElementById('particles');
-            for (let i = 0; i < 30; i++) {
-                const particle = document.createElement('div');
-                particle.style.cssText = `
-                    position: absolute;
-                    width: 2px;
-                    height: 2px;
-                    background: var(--primary);
-                    border-radius: 50%;
-                    left: ${Math.random() * 100}%;
-                    top: ${Math.random() * 100}%;
-                    animation: floatParticle ${10 + Math.random() * 20}s linear infinite;
-                `;
-                particles.appendChild(particle);
-            }
-
-            const style = document.createElement('style');
-            style.textContent = `
-                @keyframes floatParticle {
-                    0% { transform: translate(0, 0) rotate(0deg); opacity: 0; }
-                    10% { opacity: 1; }
-                    90% { opacity: 1; }
-                    100% { transform: translate(${Math.random() * 200 - 100}px, ${Math.random() * 200 - 100}px) rotate(360deg); opacity: 0; }
-                }
-            `;
-            document.head.appendChild(style);
-        }
-
-        // Навигация
-        function showMainMenu() {
-            hideAllSections();
-            mainMenu.style.display = 'block';
-        }
-
-        function showSection(sectionName) {
-            hideAllSections();
-            
-            if (sectionName === 'currency') {
-                currencyConverter.classList.add('section-active');
-            } else if (sectionName === 'rates') {
-                ratesView.classList.add('section-active');
-                updateRates();
-            } else if (sectionName === 'units') {
-                unitsConverter.classList.add('section-active');
-            }
-        }
-
-        function hideAllSections() {
-            mainMenu.style.display = 'none';
-            currencyConverter.classList.remove('section-active');
-            ratesView.classList.remove('section-active');
-            unitsConverter.classList.remove('section-active');
-        }
-
-        // Заполнение выпадающих списков валют
-        function populateCurrencyDropdowns() {
-            let options = '';
-            for (const [code, name] of Object.entries(currencies)) {
-                options += `<option value="${code}">${code} - ${name}</option>`;
-            }
-            fromCurrencySelect.innerHTML = options;
-            toCurrencySelect.innerHTML = options;
-            
-            // Устанавливаем значения по умолчанию
-            fromCurrencySelect.value = 'USD';
-            toCurrencySelect.value = 'EUR';
-        }
-
-        // Конвертация валют
-        async function convertCurrency() {
-            const amount = parseFloat(amountInput.value);
-            
-            if (isNaN(amount) || amount <= 0) {
-                resultDiv.innerHTML = 'Введите корректную сумму';
-                return;
-            }
-
-            const fromCurrency = fromCurrencySelect.value;
-            const toCurrency = toCurrencySelect.value;
-
-            showLoader(loader);
-
-            try {
-                const response = await fetch(`https://api.exchangerate-api.com/v4/latest/${fromCurrency}`);
-                const data = await response.json();
-                exchangeRates = data.rates;
-                
-                const rate = exchangeRates[toCurrency];
-                if (!rate) {
-                    resultDiv.innerHTML = 'Курс не найден';
-                    return;
-                }
-
-                const result = (amount * rate).toFixed(2);
-                const formattedAmount = formatNumber(amount);
-                const formattedResult = formatNumber(result);
-                
-                resultDiv.innerHTML = `
-                    ${getCurrencySymbol(fromCurrency)}${formattedAmount} = ${getCurrencySymbol(toCurrency)}${formattedResult}
-                    <small>1 ${fromCurrency} = ${rate.toFixed(4)} ${toCurrency}</small>
-                `;
-            } catch (error) {
-                console.error('Ошибка:', error);
-                resultDiv.innerHTML = 'Ошибка конвертации';
-            } finally {
-                hideLoader(loader);
-            }
-        }
-
-        // Обновление курсов валют
-        async function updateRates() {
-            showLoader(ratesLoader);
-            ratesGrid.innerHTML = '';
-
-            try {
-                const response = await fetch(`https://api.exchangerate-api.com/v4/latest/${baseCurrency}`);
-                const data = await response.json();
-                exchangeRates = data.rates;
-                
-                let ratesHTML = '';
-                for (const [currencyCode, currencyName] of Object.entries(currencies)) {
-                    if (exchangeRates[currencyCode] && currencyCode !== baseCurrency) {
-                        const rate = exchangeRates[currencyCode].toFixed(4);
-                        ratesHTML += `
-                            <div class="rate-card">
-                                <div class="rate-currency">${currencyCode}</div>
-                                <div class="rate-value">${rate}</div>
-                                <div class="rate-date">за 1 ${baseCurrency}</div>
-                            </div>
-                        `;
-                    }
-                }
-                ratesGrid.innerHTML = ratesHTML;
-            } catch (error) {
-                console.error('Ошибка:', error);
-                ratesGrid.innerHTML = '<p>Не удалось загрузить курсы</p>';
-            } finally {
-                hideLoader(ratesLoader);
-            }
-        }
-
-        // Конвертация единиц измерения
-        function convertLength() {
-            const amount = parseFloat(document.getElementById('length-amount').value);
-            if (isNaN(amount)) {
-                document.getElementById('length-result').innerHTML = 'Введите значение';
-                return;
-            }
-
-            const fromUnit = document.getElementById('from-unit-length').value;
-            const toUnit = document.getElementById('to-unit-length').value;
-            
-            const fromFactor = unitConversions.length[fromUnit];
-            const toFactor = unitConversions.length[toUnit];
-            const result = amount * (fromFactor / toFactor);
-            
-            const unitNames = { mm: 'мм', cm: 'см', m: 'м', km: 'км' };
-            
-            document.getElementById('length-result').innerHTML = `
-                ${formatNumber(amount)} ${unitNames[fromUnit]} = ${formatNumber(result)} ${unitNames[toUnit]}
-            `;
-        }
-
-        function convertWeight() {
-            const amount = parseFloat(document.getElementById('weight-amount').value);
-            if (isNaN(amount)) {
-                document.getElementById('weight-result').innerHTML = 'Введите значение';
-                return;
-            }
-
-            const fromUnit = document.getElementById('from-unit-weight').value;
-            const toUnit = document.getElementById('to-unit-weight').value;
-            
-            const fromFactor = unitConversions.weight[fromUnit];
-            const toFactor = unitConversions.weight[toUnit];
-            const result = amount * (fromFactor / toFactor);
-            
-            const unitNames = { g: 'г', kg: 'кг', t: 'т' };
-            
-            document.getElementById('weight-result').innerHTML = `
-                ${formatNumber(amount)} ${unitNames[fromUnit]} = ${formatNumber(result)} ${unitNames[toUnit]}
-            `;
-        }
-
-        function convertTemperature() {
-            const amount = parseFloat(document.getElementById('temp-amount').value);
-            if (isNaN(amount)) {
-                document.getElementById('temp-result').innerHTML = 'Введите значение';
-                return;
-            }
-
-            const fromUnit = document.getElementById('from-unit-temp').value;
-            const toUnit = document.getElementById('to-unit-temp').value;
-            
-            let result;
-            if (fromUnit === 'c' && toUnit === 'f') {
-                result = (amount * 9/5) + 32;
-            } else if (fromUnit === 'f' && toUnit === 'c') {
-                result = (amount - 32) * 5/9;
+            if (currentUser) {
+                // Сохранение в Firebase
+                try {
+                    await addDoc(collection(db, "history"), {
+                        ...historyEntry,
+                        userId: currentUser.uid
+                    });
+                } catch (e) { console.error("Firebase save error", e); }
             } else {
-                result = amount;
+                // Сохранение в Local Storage
+                let localHistory = JSON.parse(localStorage.getItem('neuron_history') || '[]');
+                localHistory.unshift(historyEntry);
+                localStorage.setItem('neuron_history', JSON.stringify(localHistory.slice(0, 50))); // Храним последние 50
             }
-            
-            const unitNames = { c: '°C', f: '°F' };
-            
-            document.getElementById('temp-result').innerHTML = `
-                ${formatNumber(amount)}${unitNames[fromUnit]} = ${formatNumber(result)}${unitNames[toUnit]}
-            `;
         }
 
-        // Вспомогательные функции
-        function formatNumber(num) {
-            return new Intl.NumberFormat('ru-RU').format(num);
+        async function loadHistory() {
+            const container = document.getElementById('history-container');
+            container.innerHTML = 'Загрузка...';
+            let historyData = [];
+
+            if (currentUser) {
+                const q = query(collection(db, "history"), where("userId", "==", currentUser.uid), orderBy("timestamp", "desc"), limit(20));
+                const querySnapshot = await getDocs(q);
+                querySnapshot.forEach(doc => historyData.push(doc.data()));
+            } else {
+                historyData = JSON.parse(localStorage.getItem('neuron_history') || '[]');
+            }
+
+            container.innerHTML = historyData.length ? '' : 'История пуста';
+            historyData.forEach(item => {
+                const div = document.createElement('div');
+                div.className = 'history-item';
+                div.innerHTML = `
+                    <div>
+                        <strong>${item.type}</strong><br>
+                        <span>${item.text}</span>
+                    </div>
+                    <div class="history-date">${item.date}</div>
+                `;
+                container.appendChild(div);
+            });
         }
 
-        function getCurrencySymbol(currency) {
-            const symbols = { USD: '$', EUR: '€', GBP: '£', JPY: '¥', RUB: '₽', CNY: '¥' };
-            return symbols[currency] || `${currency} `;
+        window.clearHistoryUI = () => {
+            if(!currentUser) {
+                localStorage.removeItem('neuron_history');
+                loadHistory();
+            } else {
+                alert("Удаление из облака пока недоступно в этой версии");
+            }
         }
 
-        function showLoader(loaderElement) {
-            loaderElement.style.display = 'block';
-        }
-
-        function hideLoader(loaderElement) {
-            loaderElement.style.display = 'none';
-        }
-
-        // События
-        convertBtn.addEventListener('click', convertCurrency);
-        
-        swapBtn.addEventListener('click', function() {
-            const temp = fromCurrencySelect.value;
-            fromCurrencySelect.value = toCurrencySelect.value;
-            toCurrencySelect.value = temp;
+        // --- Firebase Auth ---
+        onAuthStateChanged(auth, user => {
+            currentUser = user;
+            if (user) {
+                document.getElementById('login-trigger').style.display = 'none';
+                document.getElementById('user-info').style.display = 'flex';
+                document.getElementById('user-name').innerText = user.displayName || user.email;
+                document.getElementById('user-avatar').src = user.photoURL || `https://ui-avatars.com/api/?name=${user.email}`;
+            } else {
+                document.getElementById('login-trigger').style.display = 'block';
+                document.getElementById('user-info').style.display = 'none';
+            }
         });
 
-        // Инициализация при загрузке
-        document.addEventListener('DOMContentLoaded', init);
+        document.getElementById('google-auth').onclick = () => signInWithPopup(auth, new GoogleAuthProvider()).then(() => document.getElementById('auth-modal').style.display='none');
+        document.getElementById('logout-btn').onclick = () => signOut(auth);
+        document.getElementById('submit-auth').onclick = async () => {
+            const email = document.getElementById('auth-email').value;
+            const pass = document.getElementById('auth-password').value;
+            try {
+                await signInWithEmailAndPassword(auth, email, pass);
+                document.getElementById('auth-modal').style.display='none';
+            } catch(e) { document.getElementById('auth-error').innerText = e.message; document.getElementById('auth-error').style.display='block'; }
+        };
+
+        // Экспонируем функции для старого кода
+        window.saveToHistory = saveToHistory;
+        window.loadHistory = loadHistory;
+    </script>
+
+    <script>
+        // --- Логика приложения (старый код + интеграция истории) ---
+        function showMainMenu() {
+            document.querySelectorAll('.converter-section').forEach(s => s.classList.remove('section-active'));
+            document.getElementById('main-menu').style.display = 'block';
+        }
+
+        function showSection(id) {
+            document.getElementById('main-menu').style.display = 'none';
+            const target = id === 'history' ? 'history-section' : (id === 'currency' ? 'currency-converter' : 'units-converter');
+            document.getElementById(target).classList.add('section-active');
+            if(id === 'history') window.loadHistory();
+        }
+
+        // Валюты
+        document.getElementById('convert-btn').onclick = async () => {
+            const amt = document.getElementById('amount').value;
+            const from = document.getElementById('from-currency').value;
+            const to = document.getElementById('to-currency').value;
+            if(!amt) return;
+
+            try {
+                const res = await fetch(`https://api.exchangerate-api.com/v4/latest/${from}`);
+                const data = await res.json();
+                const result = (amt * data.rates[to]).toFixed(2);
+                const text = `${amt} ${from} → ${result} ${to}`;
+                document.getElementById('result').innerText = text;
+                
+                // СОХРАНЕНИЕ В ИСТОРИЮ
+                window.saveToHistory({ type: 'Валюта', text: text });
+            } catch(e) { alert("Ошибка сети"); }
+        };
+
+        // Единицы
+        window.runUnitConversion = () => {
+            const val = document.getElementById('length-amount').value;
+            const from = document.getElementById('from-length').value;
+            const to = document.getElementById('to-length').value;
+            let res = val;
+            if(from === 'm' && to === 'km') res = val / 1000;
+            if(from === 'km' && to === 'm') res = val * 1000;
+            
+            const text = `${val} ${from} → ${res} ${to}`;
+            document.getElementById('unit-result').innerText = text;
+            
+            // СОХРАНЕНИЕ В ИСТОРИЮ
+            window.saveToHistory({ type: 'Единицы', text: text });
+        };
+
+        // Инициализация выпадающих списков
+        const curr = ["USD", "EUR", "RUB", "CNY"];
+        const selFrom = document.getElementById('from-currency');
+        const selTo = document.getElementById('to-currency');
+        curr.forEach(c => {
+            selFrom.innerHTML += `<option value="${c}">${c}</option>`;
+            selTo.innerHTML += `<option value="${c}">${c}</option>`;
+        });
+
+        // Модалка
+        document.getElementById('login-trigger').onclick = () => document.getElementById('auth-modal').style.display = 'flex';
+        document.getElementById('close-modal').onclick = () => document.getElementById('auth-modal').style.display = 'none';
     </script>
 </body>
 </html>
