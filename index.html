@@ -26,77 +26,100 @@
             overflow-x: hidden;
         }
 
-        /* Auth UI */
-        .auth-header { position: absolute; top: 1rem; right: 1rem; z-index: 100; }
+        /* Particles Background */
+        .particles { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; }
+
+        /* Auth UI (Top Right) */
+        .auth-header { position: absolute; top: 1rem; right: 1rem; z-index: 100; display: flex; align-items: center; gap: 10px; }
         .auth-btn {
             background: var(--primary); color: white; border: none; padding: 0.6rem 1.2rem;
             border-radius: 8px; cursor: pointer; font-weight: 600; transition: all 0.3s ease;
-            display: flex; align-items: center; gap: 0.5rem;
+            display: flex; align-items: center; gap: 0.5rem; text-decoration: none;
         }
         .auth-btn:hover { background: var(--primary-dark); transform: translateY(-2px); }
-        #user-info { display: none; align-items: center; gap: 1rem; background: rgba(255,255,255,0.05); padding: 0.5rem 1rem; border-radius: 50px; }
-        .user-avatar { width: 32px; height: 32px; border-radius: 50%; border: 2px solid var(--primary); }
+        #user-info { display: none; align-items: center; gap: 0.8rem; background: rgba(255,255,255,0.05); padding: 0.4rem 0.8rem; border-radius: 50px; border: 1px solid rgba(255,255,255,0.1); }
+        .user-avatar { width: 30px; height: 30px; border-radius: 50%; border: 2px solid var(--primary); }
+        .user-name-text { font-size: 0.9rem; font-weight: 500; }
 
-        /* Modal */
+        /* Auth Modal */
         .modal {
             display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.8); backdrop-filter: blur(5px); z-index: 1000;
+            background: rgba(0,0,0,0.85); backdrop-filter: blur(8px); z-index: 1000;
             justify-content: center; align-items: center;
         }
         .modal-content {
-            background: var(--card-bg); padding: 2.5rem; border-radius: 20px;
-            width: 100%; max-width: 400px; position: relative; border: 1px solid rgba(255,255,255,0.1);
+            background: var(--card-bg); padding: 2rem; border-radius: 20px;
+            width: 90%; max-width: 400px; position: relative; border: 1px solid rgba(255,255,255,0.1);
+            box-shadow: 0 20px 50px rgba(0,0,0,0.5);
         }
         .close-modal { position: absolute; top: 1rem; right: 1rem; color: var(--text-secondary); cursor: pointer; font-size: 1.5rem; }
-        .auth-tabs { display: flex; gap: 1rem; margin-bottom: 2rem; border-bottom: 1px solid rgba(255,255,255,0.1); }
-        .auth-tab { padding: 0.5rem 1rem; cursor: pointer; color: var(--text-secondary); }
+        .auth-tabs { display: flex; gap: 1rem; margin-bottom: 1.5rem; border-bottom: 1px solid rgba(255,255,255,0.1); }
+        .auth-tab { padding: 0.5rem 1rem; cursor: pointer; color: var(--text-secondary); transition: 0.3s; }
         .auth-tab.active { color: var(--primary); border-bottom: 2px solid var(--primary); }
         .google-login-btn {
             width: 100%; padding: 0.8rem; background: white; color: #000; border: none;
-            border-radius: 8px; margin-bottom: 1.5rem; cursor: pointer; display: flex;
+            border-radius: 8px; margin-bottom: 1rem; cursor: pointer; display: flex;
             align-items: center; justify-content: center; gap: 0.5rem; font-weight: 600;
         }
+        .auth-divider { text-align: center; margin: 1rem 0; color: var(--text-secondary); font-size: 0.8rem; position: relative; }
 
-        /* History Styles */
-        .history-list { display: flex; flex-direction: column; gap: 10px; margin-top: 20px; }
-        .history-item {
-            background: rgba(255,255,255,0.05); padding: 15px; border-radius: 10px;
-            border-left: 4px solid var(--primary); display: flex; justify-content: space-between; align-items: center;
-        }
-        .history-date { font-size: 0.8rem; color: var(--text-secondary); }
-
-        /* General UI */
-        .container { max-width: 1000px; margin: 0 auto; padding: 2rem; }
-        .header { text-align: center; margin-bottom: 3rem; animation: fadeInUp 1s ease; }
-        .logo { font-size: 4rem; margin-bottom: 1rem; background: linear-gradient(135deg, var(--primary), var(--accent)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; animation: float 3s ease-in-out infinite; }
-        .nav-buttons { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 1.5rem; margin: 3rem 0; }
+        /* Layout */
+        .container { max-width: 1000px; margin: 0 auto; padding: 2rem; padding-top: 4rem; }
+        .header { text-align: center; margin-bottom: 2rem; }
+        .logo { font-size: 4rem; margin-bottom: 1rem; background: linear-gradient(135deg, var(--primary), var(--accent)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        
+        .nav-buttons { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1.5rem; margin-bottom: 3rem; }
         .nav-btn {
             background: var(--card-bg); border: 1px solid rgba(255,255,255,0.1); border-radius: 15px;
-            padding: 1.5rem; text-align: center; cursor: pointer; transition: all 0.3s ease;
-            text-decoration: none; color: inherit; display: flex; flex-direction: column; align-items: center; gap: 0.8rem;
+            padding: 2rem; text-align: center; cursor: pointer; transition: all 0.3s ease;
+            text-decoration: none; color: inherit; display: flex; flex-direction: column; align-items: center; gap: 1rem;
         }
         .nav-btn:hover { transform: translateY(-5px); border-color: var(--primary); box-shadow: 0 10px 30px rgba(99, 102, 241, 0.3); }
-        .nav-icon { font-size: 2rem; background: linear-gradient(135deg, var(--primary), var(--accent)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .nav-icon { font-size: 2.5rem; background: linear-gradient(135deg, var(--primary), var(--accent)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+
         .converter-section { background: var(--card-bg); border-radius: 20px; padding: 2rem; margin-bottom: 2rem; border: 1px solid rgba(255,255,255,0.1); display: none; }
         .section-active { display: block; animation: fadeInUp 0.5s ease; }
-        input, select { width: 100%; padding: 1rem; background: #fff; border: 1px solid #ddd; border-radius: 10px; color: #000; margin-top: 5px; }
-        .convert-btn { width: 100%; padding: 1rem; background: var(--primary); color: white; border: none; border-radius: 10px; font-weight: 600; cursor: pointer; margin: 15px 0; }
-        .result { background: rgba(255,255,255,0.05); padding: 1.5rem; border-radius: 15px; text-align: center; font-size: 1.2rem; border: 1px solid rgba(255,255,255,0.1); }
-        .error-msg { color: var(--error); font-size: 0.8rem; margin-top: 0.5rem; display: none; }
-        
+
+        input, select { width: 100%; padding: 1rem; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 10px; color: white; margin-top: 10px; font-size: 1rem; }
+        input:focus { outline: none; border-color: var(--primary); }
+        .convert-btn { width: 100%; padding: 1rem; background: var(--primary); color: white; border: none; border-radius: 10px; font-weight: 600; cursor: pointer; margin: 20px 0; font-size: 1.1rem; }
+        .result { background: rgba(255,255,255,0.03); padding: 1.5rem; border-radius: 15px; text-align: center; font-size: 1.3rem; border: 1px dashed rgba(255,255,255,0.2); }
+
+        /* History */
+        .history-list { display: flex; flex-direction: column; gap: 12px; margin-top: 20px; max-height: 400px; overflow-y: auto; padding-right: 5px; }
+        .history-item {
+            background: rgba(255,255,255,0.05); padding: 15px; border-radius: 12px;
+            border-left: 4px solid var(--primary); display: flex; justify-content: space-between; align-items: center;
+            animation: slideIn 0.3s ease;
+        }
+        .history-info strong { color: var(--accent); font-size: 0.8rem; text-transform: uppercase; letter-spacing: 1px; }
+        .history-info p { margin-top: 4px; font-size: 1.1rem; }
+        .history-date { font-size: 0.75rem; color: var(--text-secondary); text-align: right; }
+
+        /* Footer */
+        .footer { text-align: center; margin-top: 4rem; padding-top: 2rem; border-top: 1px solid rgba(255,255,255,0.1); }
+        .made-by { font-size: 1.1rem; color: var(--text-secondary); margin-bottom: 1rem; }
+        .made-by a { color: var(--primary); text-decoration: none; font-weight: bold; transition: 0.3s; }
+        .made-by a:hover { color: var(--accent); text-shadow: 0 0 10px var(--primary); }
+        .telegram-link { color: #24A1DE; text-decoration: none; display: inline-flex; align-items: center; gap: 0.5rem; font-size: 0.9rem; }
+
         @keyframes fadeInUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
-        @keyframes float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
+        @keyframes slideIn { from { opacity: 0; transform: translateX(-10px); } to { opacity: 1; transform: translateX(0); } }
     </style>
 </head>
 <body>
-    <div id="particles" style="position:fixed; top:0; left:0; width:100%; height:100%; z-index:-1;"></div>
+    <div class="particles" id="particles"></div>
 
     <div class="auth-header">
-        <button id="login-trigger" class="auth-btn"><i class="fas fa-sign-in-alt"></i> Вход</button>
+        <button id="login-trigger" class="auth-btn">
+            <i class="fas fa-user-circle"></i> Вход / Регистрация
+        </button>
         <div id="user-info">
             <img src="" id="user-avatar" class="user-avatar">
-            <span id="user-name"></span>
-            <button id="logout-btn" class="auth-btn"><i class="fas fa-sign-out-alt"></i></button>
+            <span id="user-name" class="user-name-text"></span>
+            <button id="logout-btn" class="auth-btn" style="padding: 0.4rem; background: transparent; border: 1px solid rgba(255,255,255,0.2);">
+                <i class="fas fa-sign-out-alt"></i>
+            </button>
         </div>
     </div>
 
@@ -107,13 +130,18 @@
                 <div class="auth-tab active" id="tab-login">Вход</div>
                 <div class="auth-tab" id="tab-register">Регистрация</div>
             </div>
+            
             <button class="google-login-btn" id="google-auth">
-                <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" width="18"> Google
+                <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" width="18"> 
+                Продолжить через Google
             </button>
-            <input type="email" id="auth-email" placeholder="Email" style="margin-bottom:10px">
+
+            <div class="auth-divider">или через Email</div>
+
+            <input type="email" id="auth-email" placeholder="Ваш Email">
             <input type="password" id="auth-password" placeholder="Пароль">
             <button class="convert-btn" id="submit-auth">Войти</button>
-            <div id="auth-error" class="error-msg"></div>
+            <div id="auth-error" class="error-msg" style="color: var(--error); display:none; font-size: 0.8rem; text-align: center;"></div>
         </div>
     </div>
 
@@ -122,41 +150,85 @@
             <div class="header">
                 <div class="logo"><i class="fas fa-exchange-alt"></i></div>
                 <h1>Neuron Converter</h1>
+                <p style="color: var(--text-secondary); margin-top: 10px;">Профессиональные инструменты конвертации</p>
             </div>
+
             <div class="nav-buttons">
-                <div class="nav-btn" onclick="showSection('currency')"><i class="fas fa-money-bill-wave nav-icon"></i><span>Валюты</span></div>
-                <div class="nav-btn" onclick="showSection('units')"><i class="fas fa-ruler-combined nav-icon"></i><span>Единицы</span></div>
-                <div class="nav-btn" onclick="showSection('history')"><i class="fas fa-history nav-icon"></i><span>История</span></div>
-                <a href="http://neuron-p2p.ru/" class="nav-btn"><i class="fas fa-home nav-icon"></i><span>Портал</span></a>
+                <div class="nav-btn" onclick="showSection('currency')">
+                    <i class="fas fa-money-bill-wave nav-icon"></i>
+                    <span>Валюты</span>
+                </div>
+                <div class="nav-btn" onclick="showSection('units')">
+                    <i class="fas fa-ruler-combined nav-icon"></i>
+                    <span>Единицы</span>
+                </div>
+                <div class="nav-btn" onclick="showSection('history')">
+                    <i class="fas fa-history nav-icon"></i>
+                    <span>История</span>
+                </div>
+                <a href="http://neuron-p2p.ru/" class="nav-btn">
+                    <i class="fas fa-external-link-alt nav-icon"></i>
+                    <span>Экосистема</span>
+                </a>
             </div>
         </div>
 
         <div id="currency-converter" class="converter-section">
-            <button class="auth-btn" onclick="showMainMenu()">Назад</button>
+            <button class="auth-btn" onclick="showMainMenu()" style="margin-bottom: 20px; background: rgba(255,255,255,0.1);">
+                <i class="fas fa-chevron-left"></i> Назад
+            </button>
             <h2>Конвертер валют</h2>
-            <input type="number" id="amount" placeholder="Сумма">
-            <select id="from-currency"></select>
-            <select id="to-currency"></select>
+            <input type="number" id="amount" placeholder="Введите сумму" value="100">
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+                <select id="from-currency"></select>
+                <select id="to-currency"></select>
+            </div>
             <button class="convert-btn" id="convert-btn">Конвертировать</button>
-            <div id="result" class="result">Результат</div>
+            <div id="result" class="result">Результат отобразится здесь</div>
         </div>
 
         <div id="units-converter" class="converter-section">
-            <button class="auth-btn" onclick="showMainMenu()">Назад</button>
-            <h2>Конвертер единиц (Длина)</h2>
-            <input type="number" id="length-amount" placeholder="Значение">
-            <select id="from-length"><option value="m">Метры</option><option value="km">Км</option></select>
-            <select id="to-length"><option value="m">Метры</option><option value="km">Км</option></select>
+            <button class="auth-btn" onclick="showMainMenu()" style="margin-bottom: 20px; background: rgba(255,255,255,0.1);">
+                <i class="fas fa-chevron-left"></i> Назад
+            </button>
+            <h2>Конвертер длины</h2>
+            <input type="number" id="unit-amount" placeholder="Значение" value="1">
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+                <select id="from-unit">
+                    <option value="m">Метры (m)</option>
+                    <option value="km">Километры (km)</option>
+                    <option value="cm">Сантиметры (cm)</option>
+                </select>
+                <select id="to-unit">
+                    <option value="km">Километры (km)</option>
+                    <option value="m">Метры (m)</option>
+                    <option value="cm">Сантиметры (cm)</option>
+                </select>
+            </div>
             <button class="convert-btn" onclick="runUnitConversion()">Конвертировать</button>
-            <div id="unit-result" class="result">Результат</div>
+            <div id="unit-result" class="result">Результат отобразится здесь</div>
         </div>
 
         <div id="history-section" class="converter-section">
-            <button class="auth-btn" onclick="showMainMenu()">Назад</button>
-            <h2>История операций</h2>
+            <button class="auth-btn" onclick="showMainMenu()" style="margin-bottom: 20px; background: rgba(255,255,255,0.1);">
+                <i class="fas fa-chevron-left"></i> Назад
+            </button>
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+                <h2>История операций</h2>
+                <button onclick="clearAllHistory()" style="background: transparent; color: var(--error); border: none; cursor: pointer;">
+                    <i class="fas fa-trash"></i> Очистить
+                </button>
+            </div>
             <div id="history-container" class="history-list">
                 </div>
-            <button class="auth-btn" onclick="clearHistoryUI()" style="margin-top:20px; background: var(--error)">Очистить историю</button>
+        </div>
+
+        <div class="footer">
+            <p class="made-by">Сделано <a href="https://neuron-p2p.ru" target="_blank">Neuron Ecosystem</a></p>
+            <p style="color: var(--text-secondary); font-size: 0.8rem; margin-bottom: 10px;">&copy; 2025 Все права защищены</p>
+            <a href="https://t.me/neuron_ecosystem" class="telegram-link" target="_blank">
+                <i class="fab fa-telegram"></i> Наш Telegram
+            </a>
         </div>
     </div>
 
@@ -179,79 +251,72 @@
         const db = getFirestore(app);
         let currentUser = null;
 
-        // --- Логика Истории ---
-        async function saveToHistory(data) {
-            const historyEntry = {
-                ...data,
-                date: new Date().toLocaleString(),
-                timestamp: Date.now()
-            };
-
+        // Сохранение истории
+        window.saveToHistory = async (data) => {
+            const entry = { ...data, date: new Date().toLocaleString(), ts: Date.now() };
             if (currentUser) {
-                // Сохранение в Firebase
-                try {
-                    await addDoc(collection(db, "history"), {
-                        ...historyEntry,
-                        userId: currentUser.uid
-                    });
-                } catch (e) { console.error("Firebase save error", e); }
+                try { await addDoc(collection(db, "history"), { ...entry, uid: currentUser.uid }); } 
+                catch (e) { console.error(e); }
             } else {
-                // Сохранение в Local Storage
-                let localHistory = JSON.parse(localStorage.getItem('neuron_history') || '[]');
-                localHistory.unshift(historyEntry);
-                localStorage.setItem('neuron_history', JSON.stringify(localHistory.slice(0, 50))); // Храним последние 50
+                let local = JSON.parse(localStorage.getItem('neuron_hist') || '[]');
+                local.unshift(entry);
+                localStorage.setItem('neuron_hist', JSON.stringify(local.slice(0, 30)));
             }
-        }
+        };
 
-        async function loadHistory() {
+        // Загрузка истории
+        window.loadHistory = async () => {
             const container = document.getElementById('history-container');
-            container.innerHTML = 'Загрузка...';
-            let historyData = [];
+            container.innerHTML = '<p style="text-align:center;">Загрузка истории...</p>';
+            let list = [];
 
             if (currentUser) {
-                const q = query(collection(db, "history"), where("userId", "==", currentUser.uid), orderBy("timestamp", "desc"), limit(20));
-                const querySnapshot = await getDocs(q);
-                querySnapshot.forEach(doc => historyData.push(doc.data()));
+                try {
+                    const q = query(collection(db, "history"), where("uid", "==", currentUser.uid), orderBy("ts", "desc"), limit(20));
+                    const snap = await getDocs(q);
+                    snap.forEach(doc => list.push(doc.data()));
+                } catch (e) { console.error(e); }
             } else {
-                historyData = JSON.parse(localStorage.getItem('neuron_history') || '[]');
+                list = JSON.parse(localStorage.getItem('neuron_hist') || '[]');
             }
 
-            container.innerHTML = historyData.length ? '' : 'История пуста';
-            historyData.forEach(item => {
+            container.innerHTML = list.length ? '' : '<p style="text-align:center; color:gray;">История пока пуста</p>';
+            list.forEach(item => {
                 const div = document.createElement('div');
                 div.className = 'history-item';
                 div.innerHTML = `
-                    <div>
-                        <strong>${item.type}</strong><br>
-                        <span>${item.text}</span>
+                    <div class="history-info">
+                        <strong>${item.type}</strong>
+                        <p>${item.text}</p>
                     </div>
                     <div class="history-date">${item.date}</div>
                 `;
                 container.appendChild(div);
             });
-        }
+        };
 
-        window.clearHistoryUI = () => {
+        window.clearAllHistory = () => {
             if(!currentUser) {
-                localStorage.removeItem('neuron_history');
-                loadHistory();
+                localStorage.removeItem('neuron_hist');
+                window.loadHistory();
             } else {
-                alert("Удаление из облака пока недоступно в этой версии");
+                alert("Функция удаления из облака будет добавлена в обновлении. Пока доступно только для гостей.");
             }
-        }
+        };
 
-        // --- Firebase Auth ---
+        // Auth Logic
         onAuthStateChanged(auth, user => {
             currentUser = user;
             if (user) {
                 document.getElementById('login-trigger').style.display = 'none';
                 document.getElementById('user-info').style.display = 'flex';
-                document.getElementById('user-name').innerText = user.displayName || user.email;
-                document.getElementById('user-avatar').src = user.photoURL || `https://ui-avatars.com/api/?name=${user.email}`;
+                document.getElementById('user-name').innerText = user.displayName || user.email.split('@')[0];
+                document.getElementById('user-avatar').src = user.photoURL || `https://ui-avatars.com/api/?name=${user.email}&background=6366f1&color=fff`;
             } else {
-                document.getElementById('login-trigger').style.display = 'block';
+                document.getElementById('login-trigger').style.display = 'flex';
                 document.getElementById('user-info').style.display = 'none';
             }
+            if(document.getElementById('history-section').classList.contains('section-active')) window.loadHistory();
         });
 
         document.getElementById('google-auth').onclick = () => signInWithPopup(auth, new GoogleAuthProvider()).then(() => document.getElementById('auth-modal').style.display='none');
@@ -259,19 +324,16 @@
         document.getElementById('submit-auth').onclick = async () => {
             const email = document.getElementById('auth-email').value;
             const pass = document.getElementById('auth-password').value;
+            const err = document.getElementById('auth-error');
             try {
                 await signInWithEmailAndPassword(auth, email, pass);
                 document.getElementById('auth-modal').style.display='none';
-            } catch(e) { document.getElementById('auth-error').innerText = e.message; document.getElementById('auth-error').style.display='block'; }
+            } catch(e) { err.innerText = "Ошибка: " + e.message; err.style.display='block'; }
         };
-
-        // Экспонируем функции для старого кода
-        window.saveToHistory = saveToHistory;
-        window.loadHistory = loadHistory;
     </script>
 
     <script>
-        // --- Логика приложения (старый код + интеграция истории) ---
+        // Интерфейс
         function showMainMenu() {
             document.querySelectorAll('.converter-section').forEach(s => s.classList.remove('section-active'));
             document.getElementById('main-menu').style.display = 'block';
@@ -284,53 +346,60 @@
             if(id === 'history') window.loadHistory();
         }
 
-        // Валюты
+        // Логика конвертации
         document.getElementById('convert-btn').onclick = async () => {
             const amt = document.getElementById('amount').value;
             const from = document.getElementById('from-currency').value;
             const to = document.getElementById('to-currency').value;
             if(!amt) return;
 
+            document.getElementById('result').innerText = "Загрузка...";
             try {
                 const res = await fetch(`https://api.exchangerate-api.com/v4/latest/${from}`);
                 const data = await res.json();
-                const result = (amt * data.rates[to]).toFixed(2);
-                const text = `${amt} ${from} → ${result} ${to}`;
-                document.getElementById('result').innerText = text;
-                
-                // СОХРАНЕНИЕ В ИСТОРИЮ
-                window.saveToHistory({ type: 'Валюта', text: text });
-            } catch(e) { alert("Ошибка сети"); }
+                const rate = data.rates[to];
+                const final = (amt * rate).toFixed(2);
+                const str = `${amt} ${from} = ${final} ${to}`;
+                document.getElementById('result').innerText = str;
+                window.saveToHistory({ type: 'Валюта', text: str });
+            } catch(e) { document.getElementById('result').innerText = "Ошибка сети"; }
         };
 
-        // Единицы
         window.runUnitConversion = () => {
-            const val = document.getElementById('length-amount').value;
-            const from = document.getElementById('from-length').value;
-            const to = document.getElementById('to-length').value;
+            const val = document.getElementById('unit-amount').value;
+            const f = document.getElementById('from-unit').value;
+            const t = document.getElementById('to-unit').value;
             let res = val;
-            if(from === 'm' && to === 'km') res = val / 1000;
-            if(from === 'km' && to === 'm') res = val * 1000;
             
-            const text = `${val} ${from} → ${res} ${to}`;
-            document.getElementById('unit-result').innerText = text;
+            const factors = { m: 1, km: 1000, cm: 0.01 };
+            res = (val * factors[f] / factors[t]).toFixed(4);
             
-            // СОХРАНЕНИЕ В ИСТОРИЮ
-            window.saveToHistory({ type: 'Единицы', text: text });
+            const str = `${val} ${f} = ${res} ${t}`;
+            document.getElementById('unit-result').innerText = str;
+            window.saveToHistory({ type: 'Длина', text: str });
         };
 
-        // Инициализация выпадающих списков
-        const curr = ["USD", "EUR", "RUB", "CNY"];
-        const selFrom = document.getElementById('from-currency');
-        const selTo = document.getElementById('to-currency');
-        curr.forEach(c => {
-            selFrom.innerHTML += `<option value="${c}">${c}</option>`;
-            selTo.innerHTML += `<option value="${c}">${c}</option>`;
+        // Инициализация
+        const currs = ["USD", "EUR", "RUB", "CNY", "GBP", "JPY"];
+        const s1 = document.getElementById('from-currency');
+        const s2 = document.getElementById('to-currency');
+        currs.forEach(c => {
+            s1.innerHTML += `<option value="${c}">${c}</option>`;
+            s2.innerHTML += `<option value="${c}">${c}</option>`;
         });
+        s1.value = "USD"; s2.value = "RUB";
 
         // Модалка
         document.getElementById('login-trigger').onclick = () => document.getElementById('auth-modal').style.display = 'flex';
         document.getElementById('close-modal').onclick = () => document.getElementById('auth-modal').style.display = 'none';
+        
+        // Фоновые частицы (простой вариант)
+        const pCont = document.getElementById('particles');
+        for(let i=0; i<15; i++) {
+            const p = document.createElement('div');
+            p.style.cssText = `position:absolute; width:2px; height:2px; background:rgba(99,102,241,0.3); left:${Math.random()*100}%; top:${Math.random()*100}%;`;
+            pCont.appendChild(p);
+        }
     </script>
 </body>
 </html>
